@@ -1,19 +1,15 @@
 package main
 
 import (
-	"io"
-	"log"
-	"net/http"
+	"github.com/SInITRS/gorder/common/server"
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func main() {
-	log.Println("Listenning on 8082...")
-	mux := http.NewServeMux()
-	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("trying to pong")
-		_, _ = io.WriteString(w, "pong")
+	serviceName := viper.GetString("order.service-name")
+	server.RunHTTPServer(serviceName, func(router *gin.Engine) {
+
 	})
-	if err := http.ListenAndServe(":8082", mux); err != nil {
-		log.Fatal(err)
-	}
+
 }
