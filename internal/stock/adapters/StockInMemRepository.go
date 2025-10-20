@@ -22,7 +22,7 @@ var stub = map[string]*orderpb.Item{
 	},
 }
 
-func NewStockRepository() *StockRepository {
+func NewMemoryStockRepository() *StockRepository {
 	return &StockRepository{
 		lock:  &sync.RWMutex{},
 		store: stub,
