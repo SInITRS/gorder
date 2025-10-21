@@ -22,7 +22,7 @@ func NewMemoryOrderRepository() *MemoryOrderRepository {
 	}
 }
 
-func (m MemoryOrderRepository) CreateOrder(ctx context.Context, order *domain.Order) (*domain.Order, error) {
+func (m *MemoryOrderRepository) CreateOrder(ctx context.Context, order *domain.Order) (*domain.Order, error) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 	newOrder := &domain.Order{
@@ -40,7 +40,7 @@ func (m MemoryOrderRepository) CreateOrder(ctx context.Context, order *domain.Or
 	return newOrder, nil
 }
 
-func (m MemoryOrderRepository) GetOrder(ctx context.Context, id, customerID string) (*domain.Order, error) {
+func (m *MemoryOrderRepository) GetOrder(ctx context.Context, id, customerID string) (*domain.Order, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 	for _, order := range m.store {
@@ -52,7 +52,7 @@ func (m MemoryOrderRepository) GetOrder(ctx context.Context, id, customerID stri
 	return nil, domain.NotFoundError{OrderID: id}
 }
 
-func (m MemoryOrderRepository) UpdateOrder(ctx context.Context, order *domain.Order, updateFunc func(context.Context, *domain.Order) (*domain.Order, error)) error {
+func (m *MemoryOrderRepository) UpdateOrder(ctx context.Context, order *domain.Order, updateFunc func(context.Context, *domain.Order) (*domain.Order, error)) error {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 	found := false
