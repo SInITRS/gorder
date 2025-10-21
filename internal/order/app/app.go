@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/SInITRS/gorder/order/app/command"
 	"github.com/SInITRS/gorder/order/app/query"
 )
 
@@ -10,6 +11,8 @@ type Application struct {
 }
 
 type Commands struct {
+	CreateOrder command.CreateOrderHandler
+	UpdateOrder command.UpdateOrderHandler
 }
 
 type Queries struct {
