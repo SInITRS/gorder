@@ -6,9 +6,9 @@ import (
 )
 
 type Repository interface {
-	CreateOrder(ctx context.Context, order *Order) (*Order, error)
-	GetOrder(ctx context.Context, id, customerID string) (*Order, error)
-	UpdateOrder(
+	Create(ctx context.Context, order *Order) (*Order, error)
+	Get(ctx context.Context, id, customerID string) (*Order, error)
+	Update(
 		ctx context.Context,
 		order *Order,
 		updateFunc func(context.Context, *Order) (*Order, error),

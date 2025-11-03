@@ -7,6 +7,7 @@ replace github.com/SInITRS/gorder/common => ../common
 require (
 	github.com/SInITRS/gorder/common v0.0.0-00010101000000-000000000000
 	github.com/spf13/viper v1.21.0
+	google.golang.org/grpc v1.75.1
 )
 
 require (
@@ -55,6 +56,5 @@ require (
 	golang.org/x/text v0.29.0 // indirect
 	golang.org/x/tools v0.37.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250707201910-8d1bb00bc6a7 // indirect
-	google.golang.org/grpc v1.75.1 // indirect
 	google.golang.org/protobuf v1.36.9 // indirect
 )

@@ -40,7 +40,7 @@ func (c updateOrderHandler) Handle(ctx context.Context, cmd UpdateOrder) (interf
 		logrus.Warnf("UpdateOrder handler called with nil updateFn")
 		cmd.updateFn = func(ctx context.Context, order *domain.Order) (*domain.Order, error) { return order, nil }
 	}
-	if err := c.orderRepo.UpdateOrder(ctx, cmd.Order, cmd.updateFn); err != nil {
+	if err := c.orderRepo.Update(ctx, cmd.Order, cmd.updateFn); err != nil {
 		return nil, err
 	}
 	return nil, nil
