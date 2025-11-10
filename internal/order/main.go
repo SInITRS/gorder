@@ -5,11 +5,13 @@ import (
 	"log"
 
 	"github.com/SInITRS/gorder/common/config"
+	"github.com/SInITRS/gorder/common/discovery"
 	"github.com/SInITRS/gorder/common/genproto/orderpb"
 	"github.com/SInITRS/gorder/common/server"
 	"github.com/SInITRS/gorder/order/ports"
 	"github.com/SInITRS/gorder/order/service"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )
@@ -28,6 +30,14 @@ func main() {
 
 	application, cleanup := service.NewApplication(ctx)
 	defer cleanup()
+
+	deregisterFunc, err := discovery.RegisterToConsul(ctx, serviceName)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	defer func() {
+		_ = deregisterFunc()
+	}()
 
 	go server.RunGRPCServer(serviceName, func(server *grpc.Server) {
 		svc := ports.NewGRPCServer(application)
