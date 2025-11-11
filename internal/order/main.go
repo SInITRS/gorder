@@ -7,6 +7,7 @@ import (
 	"github.com/SInITRS/gorder/common/config"
 	"github.com/SInITRS/gorder/common/discovery"
 	"github.com/SInITRS/gorder/common/genproto/orderpb"
+	"github.com/SInITRS/gorder/common/logging"
 	"github.com/SInITRS/gorder/common/server"
 	"github.com/SInITRS/gorder/order/ports"
 	"github.com/SInITRS/gorder/order/service"
@@ -17,6 +18,7 @@ import (
 )
 
 func init() {
+	logging.Init()
 	if err := config.NewViperConfig(); err != nil {
 		log.Fatalf("viper.ReadInConfig() failed: %v", err)
 	}

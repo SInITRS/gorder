@@ -2,5 +2,7 @@
     "cSpell.words": [
         "gorder",
         "ITRS"
-    ]
+    ],
+    "go.goroot": "/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64",
+    "go.useLanguageServer": true
 }

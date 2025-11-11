@@ -10,8 +10,16 @@ require (
 	github.com/oapi-codegen/runtime v1.1.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.21.0
+	github.com/x-cray/logrus-prefixed-formatter v0.5.2
 	google.golang.org/grpc v1.75.1
 	google.golang.org/protobuf v1.36.9
+)
+
+require (
+	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
+	github.com/onsi/ginkgo v1.16.5 // indirect
+	github.com/onsi/gomega v1.38.2 // indirect
+	golang.org/x/term v0.35.0 // indirect
 )
 
 require (
@@ -40,6 +48,7 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/serf v0.10.1 // indirect
+	github.com/joho/godotenv v1.5.1
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect

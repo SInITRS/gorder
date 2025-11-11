@@ -7,6 +7,7 @@ import (
 	"github.com/SInITRS/gorder/common/config"
 	"github.com/SInITRS/gorder/common/discovery"
 	"github.com/SInITRS/gorder/common/genproto/stockpb"
+	"github.com/SInITRS/gorder/common/logging"
 	"github.com/SInITRS/gorder/common/server"
 	"github.com/SInITRS/gorder/stock/ports"
 	"github.com/SInITRS/gorder/stock/service"
@@ -16,12 +17,14 @@ import (
 )
 
 func init() {
+	logging.Init()
 	if err := config.NewViperConfig(); err != nil {
 		log.Fatalf("viper.ReadInConfig() failed: %v", err)
 	}
 }
 
 func main() {
+	logging.Init()
 	serviceName := viper.GetString("stock.service-name")
 	serverType := viper.GetString("stock.server-to-run")
 
