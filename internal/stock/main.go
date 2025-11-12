@@ -17,14 +17,14 @@ import (
 )
 
 func init() {
-	logging.Init()
 	if err := config.NewViperConfig(); err != nil {
 		log.Fatalf("viper.ReadInConfig() failed: %v", err)
 	}
+	logging.Init()
+
 }
 
 func main() {
-	logging.Init()
 	serviceName := viper.GetString("stock.service-name")
 	serverType := viper.GetString("stock.server-to-run")
 

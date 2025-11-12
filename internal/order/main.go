@@ -18,10 +18,10 @@ import (
 )
 
 func init() {
-	logging.Init()
 	if err := config.NewViperConfig(); err != nil {
 		log.Fatalf("viper.ReadInConfig() failed: %v", err)
 	}
+	logging.Init()
 }
 
 func main() {
