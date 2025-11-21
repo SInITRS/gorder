@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// RegisterToConsul registers the service to Consul and starts a heartbeat for health checking.
 func RegisterToConsul(ctx context.Context, serviceName string) (func() error, error) {
 	registry, err := consul.New(viper.GetString("consul.addr"))
 	if err != nil {
@@ -30,10 +31,12 @@ func RegisterToConsul(ctx context.Context, serviceName string) (func() error, er
 		}
 
 	}()
+	// Log registration success
 	logrus.WithFields(logrus.Fields{
 		"serviceName": serviceName,
 		"addr":        hostPort,
 	}).Info("Registered to Consul")
+	// Return deregistration function
 	return func() error {
 		return registry.Deregister(ctx, instanceID, serviceName)
 	}, nil

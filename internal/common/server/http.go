@@ -5,11 +5,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+// RunHTTPServer starts an HTTP server for the given service name.
 func RunHTTPServer(serviceName string, wrapper func(router *gin.Engine)) {
 	addr := viper.Sub(serviceName).GetString("http-addr")
 	RunHTTPServerOnAddr(addr, wrapper)
 }
 
+// RunHTTPServerOnAddr starts an HTTP server on the specified address.
 func RunHTTPServerOnAddr(addr string, wrapper func(router *gin.Engine)) {
 	apiRouter := gin.New()
 	wrapper(apiRouter)

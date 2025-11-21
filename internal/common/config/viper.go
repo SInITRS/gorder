@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// NewViperConfig initializes the viper configuration.
 func NewViperConfig() error {
 	if err := godotenv.Load("../common/config/.env"); err != nil {
 		return err

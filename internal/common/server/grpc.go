@@ -16,6 +16,7 @@ func init() {
 	grpcLogrus.ReplaceGrpcLogger(logrus.NewEntry(logger))
 }
 
+// RunGRPCServer starts a gRPC server for the given service name.
 func RunGRPCServer(serviceName string, registerServer func(server *grpc.Server)) {
 	addr := viper.Sub(serviceName).GetString("grpc-addr")
 	if addr == "" {
@@ -26,6 +27,7 @@ func RunGRPCServer(serviceName string, registerServer func(server *grpc.Server))
 	RunGRPCServerOnAddr(addr, registerServer)
 }
 
+// RunGRPCServerOnAddr starts a gRPC server on the specified address.
 func RunGRPCServerOnAddr(addr string, registerServer func(server *grpc.Server)) {
 	logrusEntry := logrus.NewEntry(logrus.StandardLogger())
 	grpcServer := grpc.NewServer(

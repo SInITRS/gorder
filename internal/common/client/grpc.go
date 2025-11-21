@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+// NewStockGRPCClient creates a new gRPC client for the stock service.
 func NewStockGRPCClient(ctx context.Context) (client stockpb.StockServiceClient, close func() error, err error) {
 	grpcAddr := viper.GetString("stock.grpc-addr")
 	opts, err := grpcDialOpts(grpcAddr)
@@ -25,6 +26,8 @@ func NewStockGRPCClient(ctx context.Context) (client stockpb.StockServiceClient,
 	}
 	return stockpb.NewStockServiceClient(conn), conn.Close, nil
 }
+
+// grpcDialOpts returns the gRPC dial options for the given address.
 func grpcDialOpts(addr string) ([]grpc.DialOption, error) {
 	return []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),

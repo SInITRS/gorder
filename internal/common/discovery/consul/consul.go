@@ -40,6 +40,7 @@ func New(consulAddr string) (*Registry, error) {
 	return consulClient, nil
 }
 
+// Register registers a service instance with Consul.
 func (r *Registry) Register(ctx context.Context, instanceID string, serviceName string, hostPort string) error {
 	parts := strings.Split(hostPort, ":")
 	if len(parts) != 2 {
@@ -63,6 +64,7 @@ func (r *Registry) Register(ctx context.Context, instanceID string, serviceName 
 	})
 }
 
+// Deregister removes a service instance from Consul.
 func (r *Registry) Deregister(ctx context.Context, instanceID string, serviceName string) error {
 	logrus.WithFields(logrus.Fields{
 		"instance ID":  instanceID,
@@ -71,6 +73,7 @@ func (r *Registry) Deregister(ctx context.Context, instanceID string, serviceNam
 	return r.client.Agent().ServiceDeregister(instanceID)
 }
 
+// Discover retrieves healthy service instances from Consul.
 func (r *Registry) Discover(ctx context.Context, serviceName string) ([]string, error) {
 	entries, _, err := r.client.Health().Service(serviceName, "", true, nil)
 
@@ -87,6 +90,7 @@ func (r *Registry) Discover(ctx context.Context, serviceName string) ([]string, 
 	return results, nil
 }
 
+// HealthCheck updates the TTL for the service instance to indicate it's healthy.
 func (r *Registry) HealthCheck(instanceID string, serviceName string) error {
 	return r.client.Agent().UpdateTTL(instanceID, "online", api.HealthPassing)
 }

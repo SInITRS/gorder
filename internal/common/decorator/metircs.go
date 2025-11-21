@@ -9,15 +9,18 @@ import (
 	"github.com/bytedance/gopkg/util/logger"
 )
 
+// MetricsClient is the interface for metrics clients.
 type MetricsClient interface {
 	Inc(key string, value int)
 }
 
+// queryMetricsDecorator is a decorator that measures the query execution time.
 type queryMetricsDecorator[C, R any] struct {
 	base   QueryHandler[C, R]
 	client MetricsClient
 }
 
+// Handle implements QueryHandler.
 func (q queryMetricsDecorator[C, R]) Handle(ctx context.Context, cmd C) (result R, err error) {
 	start := time.Now()
 	actionName := strings.ToLower(generateActionName(cmd))

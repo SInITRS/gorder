@@ -8,11 +8,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// queryLoggingDecorator is a decorator that logs the query execution.
 type queryLoggingDecorator[C, R any] struct {
 	logger *logrus.Entry
 	base   QueryHandler[C, R]
 }
 
+// Handle implements QueryHandler.
 func (q queryLoggingDecorator[C, R]) Handle(ctx context.Context, cmd C) (result R, err error) {
 	logger := q.logger.WithFields(logrus.Fields{
 		"query":      generateActionName(cmd),

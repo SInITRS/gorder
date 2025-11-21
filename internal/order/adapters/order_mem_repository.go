@@ -15,6 +15,7 @@ type MemoryOrderRepository struct {
 	store []*domain.Order
 }
 
+// NewMemoryOrderRepository creates a new MemoryOrderRepository.
 func NewMemoryOrderRepository() *MemoryOrderRepository {
 	return &MemoryOrderRepository{
 		lock:  &sync.RWMutex{},
@@ -22,6 +23,7 @@ func NewMemoryOrderRepository() *MemoryOrderRepository {
 	}
 }
 
+// Create implements the OrderRepository interface.
 func (m *MemoryOrderRepository) Create(_ context.Context, order *domain.Order) (*domain.Order, error) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
@@ -40,6 +42,7 @@ func (m *MemoryOrderRepository) Create(_ context.Context, order *domain.Order) (
 	return newOrder, nil
 }
 
+// Get implements the OrderRepository interface.
 func (m *MemoryOrderRepository) Get(_ context.Context, id, customerID string) (*domain.Order, error) {
 	for i, v := range m.store {
 		logrus.Infof("m.store[%d] = %+v", i, v)
@@ -55,6 +58,7 @@ func (m *MemoryOrderRepository) Get(_ context.Context, id, customerID string) (*
 	return nil, domain.NotFoundError{OrderID: id}
 }
 
+// Update implements the OrderRepository interface.
 func (m *MemoryOrderRepository) Update(ctx context.Context, order *domain.Order, updateFunc func(context.Context, *domain.Order) (*domain.Order, error)) error {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
