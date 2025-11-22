@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 
+	"github.com/SInITRS/gorder/common/discovery"
 	"github.com/SInITRS/gorder/common/genproto/stockpb"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -11,7 +12,12 @@ import (
 
 // NewStockGRPCClient creates a new gRPC client for the stock service.
 func NewStockGRPCClient(ctx context.Context) (client stockpb.StockServiceClient, close func() error, err error) {
-	grpcAddr := viper.GetString("stock.grpc-addr")
+	grpcAddr, err := discovery.GetServiceAddr(ctx, viper.GetString("stock.service-name"))
+	if err != nil {
+		return nil, func() error {
+			return nil
+		}, err
+	}
 	opts, err := grpcDialOpts(grpcAddr)
 	if err != nil {
 		return nil, func() error {

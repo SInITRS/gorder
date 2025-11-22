@@ -8,6 +8,7 @@ require (
 	github.com/SInITRS/gorder/common v0.0.0-00010101000000-000000000000
 	github.com/gin-gonic/gin v1.11.0
 	github.com/oapi-codegen/runtime v1.1.2
+	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.21.0
 	google.golang.org/grpc v1.75.1
