@@ -22,7 +22,7 @@ func (c *Consumer) Listen(ch *amqp.Channel) {
 	if err != nil {
 		logrus.Warnf("failed to consume: quene = %s, err = %v", q.Name, err)
 	}
-	var forever chan struct{}
+	forever := make(chan struct{})
 	go func() {
 		for msg := range msgs {
 			c.handleMessage(msg, q)
