@@ -10,7 +10,7 @@ import (
 
 type UpdateOrder struct {
 	Order    *domain.Order
-	updateFn func(context.Context, *domain.Order) (*domain.Order, error)
+	UpdateFn func(context.Context, *domain.Order) (*domain.Order, error)
 }
 
 type UpdateOrderHandler decorator.CommandHandler[UpdateOrder, interface{}]
@@ -28,7 +28,7 @@ func NewUpdateOrderHandler(
 	if orderRepo == nil {
 		panic("orderRepo is nil")
 	}
-	return decorator.ApplyCommandDecorators[UpdateOrder, interface{}](
+	return decorator.ApplyCommandDecorators(
 		updateOrderHandler{orderRepo: orderRepo},
 		logger,
 		client,
@@ -36,11 +36,11 @@ func NewUpdateOrderHandler(
 }
 
 func (c updateOrderHandler) Handle(ctx context.Context, cmd UpdateOrder) (interface{}, error) {
-	if cmd.updateFn == nil {
-		logrus.Warnf("UpdateOrder handler called with nil updateFn")
-		cmd.updateFn = func(ctx context.Context, order *domain.Order) (*domain.Order, error) { return order, nil }
+	if cmd.UpdateFn == nil {
+		logrus.Warnf("UpdateOrder handler called with nil UpdateFn")
+		cmd.UpdateFn = func(ctx context.Context, order *domain.Order) (*domain.Order, error) { return order, nil }
 	}
-	if err := c.orderRepo.Update(ctx, cmd.Order, cmd.updateFn); err != nil {
+	if err := c.orderRepo.Update(ctx, cmd.Order, cmd.UpdateFn); err != nil {
 		return nil, err
 	}
 	return nil, nil

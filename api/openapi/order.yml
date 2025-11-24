@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.3
 info:
   title: order service
   description: order service
@@ -8,7 +8,6 @@ servers:
     variables:
       hostname:
         default: 127.0.0.1
-
 
 paths:
   /customer/{customerID}/orders/{orderID}:
@@ -29,13 +28,14 @@ paths:
 
       responses:
         '200':
-          description: tod
+          description: todo
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Order'
+
         default:
-          description: tod
+          description: todo
           content:
             application/json:
               schema:
@@ -51,12 +51,6 @@ paths:
             type: string
           required: true
 
-        - in: path
-          name: orderID
-          schema:
-            type: string
-          required: true
-
       requestBody:
         required: true
         content:
@@ -66,13 +60,14 @@ paths:
 
       responses:
         '200':
-          description: tod
+          description: todo
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Order'
+
         default:
-          description: tod
+          description: todo
           content:
             application/json:
               schema:
@@ -117,6 +112,9 @@ components:
 
     CreateOrderRequest:
       type: object
+      required:
+        - customerID
+        - items
       properties:
         customerID:
           type: string

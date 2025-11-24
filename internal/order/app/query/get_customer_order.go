@@ -35,7 +35,7 @@ func NewGetCustomerOrderHandler(
 	if orderRepo == nil {
 		panic("orderRepo is nil")
 	}
-	return decorator.ApplyQueryDecorators[GetCustomerOrder, *domain.Order](
+	return decorator.ApplyQueryDecorators(
 		getCustomerOrderHandler{orderRepo: orderRepo},
 		logger,
 		client,
