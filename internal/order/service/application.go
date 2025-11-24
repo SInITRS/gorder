@@ -17,8 +17,10 @@ import (
 )
 
 func NewApplication(ctx context.Context) (app.Application, func()) {
-
 	stockClient, closeStockClient, err := grpcClient.NewStockGRPCClient(ctx)
+	if err != nil {
+		panic(err)
+	}
 	stockGRPC := grpc.NewStockGRPC(stockClient)
 
 	channel, closech := broker.Connect(
@@ -28,9 +30,6 @@ func NewApplication(ctx context.Context) (app.Application, func()) {
 		viper.GetString("rabbitmq.port"),
 	)
 
-	if err != nil {
-		panic(err)
-	}
 	return newApplication(ctx, stockGRPC, channel), func() {
 		_ = closeStockClient()
 		_ = channel.Close()

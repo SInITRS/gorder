@@ -54,7 +54,8 @@ func GetServiceAddr(ctx context.Context, serviceName string) (string, error) {
 		return "", err
 	}
 	if len(addrs) == 0 {
-		return "", errors.New("no address found")
+		logrus.Warnf("Consul did not discover instance of %s", serviceName)
+		return "", errors.New("consul did not find address")
 	}
 	i := rand.Intn(len(addrs))
 	logrus.Infof("Discovered %d instance of %s, using %s", len(addrs), serviceName, addrs[i])

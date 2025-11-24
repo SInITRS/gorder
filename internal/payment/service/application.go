@@ -1,0 +1,38 @@
+package service
+
+import (
+	"context"
+
+	grpcClient "github.com/SInITRS/gorder/common/client"
+	"github.com/SInITRS/gorder/common/metrics"
+	"github.com/SInITRS/gorder/payment/adapters"
+	"github.com/SInITRS/gorder/payment/app"
+	"github.com/SInITRS/gorder/payment/app/command"
+	"github.com/SInITRS/gorder/payment/domain"
+	"github.com/SInITRS/gorder/payment/infrastructure/processor"
+	"github.com/sirupsen/logrus"
+)
+
+func NewApplication(ctx context.Context) (app.Application, func()) {
+	orderClient, closeOrderClient, err := grpcClient.NewOrderGRPCClient(ctx)
+	if err != nil {
+		panic(err)
+	}
+	orderGRPC := adapters.NewOrderGRPC(orderClient)
+
+	memoryProcessor := processor.NewInmemProcessor()
+
+	return newApplication(ctx, orderGRPC, memoryProcessor), func() {
+		_ = closeOrderClient()
+	}
+}
+
+func newApplication(_ context.Context, orderGRPC command.OrderService, processor domain.Processor) app.Application {
+	logger := logrus.NewEntry(logrus.StandardLogger())
+	metricsClient := metrics.TodoMetrics{}
+	return app.Application{
+		Commands: app.Commands{
+			CreatePayment: command.NewCreatePaymentHandler(processor, orderGRPC, logger, metricsClient),
+		},
+	}
+}
