@@ -10,6 +10,7 @@ require (
 	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.21.0
+	github.com/stripe/stripe-go/v84 v84.0.0
 )
 
 require (

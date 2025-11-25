@@ -45,14 +45,18 @@ func main() {
 		svc := ports.NewGRPCServer(application)
 		orderpb.RegisterOrderServiceServer(server, svc)
 	})
+
 	server.RunHTTPServer(serviceName, func(router *gin.Engine) {
-		ports.RegisterHandlersWithOptions(router, HTTPServer{
-			app: application,
-		}, ports.GinServerOptions{
-			BaseURL:      "/api",
-			Middlewares:  nil,
-			ErrorHandler: nil,
-		})
+		ports.RegisterHandlersWithOptions(
+			router,
+			HTTPServer{
+				app: application,
+			},
+			ports.GinServerOptions{
+				BaseURL:      "/api",
+				Middlewares:  nil,
+				ErrorHandler: nil,
+			})
 	})
 
 }

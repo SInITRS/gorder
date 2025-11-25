@@ -11,6 +11,7 @@ import (
 	"github.com/SInITRS/gorder/payment/domain"
 	"github.com/SInITRS/gorder/payment/infrastructure/processor"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 func NewApplication(ctx context.Context) (app.Application, func()) {
@@ -20,9 +21,9 @@ func NewApplication(ctx context.Context) (app.Application, func()) {
 	}
 	orderGRPC := adapters.NewOrderGRPC(orderClient)
 
-	memoryProcessor := processor.NewInmemProcessor()
-
-	return newApplication(ctx, orderGRPC, memoryProcessor), func() {
+	// memoryProcessor := processor.NewInmemProcessor()
+	stripeProcessor := processor.NewStripeProcessor(viper.GetString("STRIPE_SECRET_KEY"))
+	return newApplication(ctx, orderGRPC, stripeProcessor), func() {
 		_ = closeOrderClient()
 	}
 }
