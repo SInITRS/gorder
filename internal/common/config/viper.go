@@ -15,6 +15,7 @@ func NewViperConfig() error {
 	viper.AddConfigPath("../common/config")
 	viper.AutomaticEnv()
 	viper.BindEnv("stripe-key", "STRIPE_SECRET_KEY")
+	viper.BindEnv("endpoint-stripe-secret", "ENDPOINT_STRIPE_SECRET")
 	viper.BindEnv("local-env", "LOCAL_ENV")
 
 	return viper.ReadInConfig()

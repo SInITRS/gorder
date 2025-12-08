@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorder</title>
+</head>
+
+<body>
+    <section>
+        <div class="main-card">
+            <div class="icon-placeholder">📦</div>
+            <p class="title">
+                您已成功下单！
+            </p>
+            <p class="status-line">
+                订单状态：<span id="orderStatus" class="status-tag">等待中...</span>
+            </p>
+        </div>
+
+        <div class="ready-popup">
+            <div class="popup-content">
+                <div class="success-icon">✅</div>
+                <p class="popup-title">您的订单正在处理中...</p>
+                <p class="order-info">
+                    订单号：<b><span id="orderID"></span></b>
+                </p>
+
+                <button class="close-btn" onclick="document.querySelector('.ready-popup').style.display = 'none'">
+                    关闭
+                </button>
+            </div>
+        </div>
+
+        <div class="after-payment-popup">
+            <div class="popup-content">
+                <div class="waiting-icon">💳</div>
+                <p class="popup-title">等待支付中...</p>
+                <a id="payment-link" href="#" class="action-btn">去支付</a>
+            </div>
+        </div>
+    </section>
+</body>
+
+<style>
+    /* 全局重置与字体 */
+    * {
+        box-sizing: border-box;
+    }
+
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        background-color: #f4f7f6;
+        /* 柔和的浅灰背景 */
+        color: #333;
+        height: 100%;
+    }
+
+    /* 主布局 */
+    section {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* 主卡片样式 */
+    .main-card {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+        transition: transform 0.3s ease;
+    }
+
+    .icon-placeholder {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+
+    .title {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+        color: #2c3e50;
+    }
+
+    .status-line {
+        font-size: 16px;
+        color: #666;
+        margin: 0;
+    }
+
+    .status-tag {
+        color: #3498db;
+        font-weight: 600;
+    }
+
+    /* 弹窗通用样式逻辑 
+       注意：JS会将display设置为block，因此我们使用 text-align: center 配合 padding 来居中内容
+    */
+    .ready-popup,
+    .after-payment-popup {
+        display: none;
+        /* 初始隐藏 */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        /* 半透明遮罩层 */
+        z-index: 100;
+        backdrop-filter: blur(4px);
+        /* 背景模糊效果 */
+
+        /* 为了配合 JS 的 display:block，这里使用 Flex 布局来居中弹窗本身是不行的，
+           因为 JS 会覆盖 display 属性。
+           所以我们利用 absolute 定位 + transform 来保持居中，或者让内部容器居中。
+           但在原 JS逻辑中，它直接操作的是 popup div。
+           为了兼容 JS 的 display:block，我们让这个 popup 本身全屏，然后内容用 margin 居中。
+        */
+    }
+
+    /* 由于 JS 设置 style.display = 'block' 会覆盖 CSS 中的 display: flex，
+       为了保证弹窗居中，我们需要针对 JS 的行为做特殊的 CSS 处理。
+       我们将 popup 定义为全屏遮罩，利用 padding-top 或 transform 居中内部内容。
+    */
+    .ready-popup,
+    .after-payment-popup {
+        /* JS 设置 block 后，这里作为遮罩层 */
+    }
+
+    /* 增加一个内部容器样式的定义 (虽然 HTML 结构没变，但我们利用 CSS 选择器美化直接子元素) */
+    .ready-popup>*,
+    .after-payment-popup>* {
+        /* 这是一个稍微有些 hack 的写法，因为 HTML 结构比较简单。
+           更好的方式是给内容包一层 div，但为了严格不改结构，我们直接修饰。
+        */
+    }
+
+    /* 重新定义弹窗本身为居中的卡片，但因为 JS 覆盖 display，我们使用一种兼容写法 */
+    .ready-popup,
+    .after-payment-popup {
+        /* 覆盖原来的 fixed 定位逻辑，使其更现代化 */
+        top: 50%;
+        left: 50%;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%);
+
+        background-color: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        border: none;
+        /* 去除旧边框 */
+        text-align: center;
+        min-width: 300px;
+    }
+
+    .popup-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px !important;
+        color: #333;
+    }
+
+    .order-info {
+        margin: 15px 0;
+        font-size: 14px;
+        color: #888;
+        /* 替代原有的 burlywood 颜色 */
+    }
+
+    .order-info b span {
+        color: #e67e22;
+        /* 橙色高亮订单号 */
+        font-family: monospace;
+        font-size: 1.1em;
+    }
+
+    /* 按钮样式 */
+    .close-btn,
+    .after-payment-popup a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 24px;
+        background-color: #27ae60;
+        /* 绿色主色调 */
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.2s, transform 0.1s;
+        box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2);
+    }
+
+    .close-btn:hover,
+    .after-payment-popup a:hover {
+        background-color: #219150;
+        transform: translateY(-1px);
+    }
+
+    .close-btn:active,
+    .after-payment-popup a:active {
+        transform: translateY(0);
+    }
+
+    /* 支付按钮特殊样式 */
+    .after-payment-popup a {
+        background-color: #2980b9;
+        /* 蓝色支付按钮 */
+        box-shadow: 0 4px 6px rgba(41, 128, 185, 0.2);
+    }
+
+    .after-payment-popup a:hover {
+        background-color: #2471a3;
+    }
+</style>
+
+<script>
+    const urlParam = new URLSearchParams(window.location.search);
+    const customerID = urlParam.get('customerID');
+    const orderID = urlParam.get('orderID');
+    const order = {
+        customerID,
+        orderID,
+        status: 'pending'
+    };
+    const getOrder = async () => {
+        // Mocking the fetch for demonstration since API is not available locally
+        // In production, this line remains exactly as your original code:
+        // const res = await fetch(`/api/customer/${customerID}/orders/${orderID}`);
+
+        // --- 请保留原本的 fetch 代码，这里仅为展示逻辑 ---
+        const res = await fetch(`/api/customer/${customerID}/orders/${orderID}`);
+        // ------------------------------------------------
+
+        const data = await res.json();
+        console.log("data = ", data)
+
+        /*
+        {
+          "code": 0,
+          "message": "success",
+          "data": {
+            ...
+          }
+        }
+         */
+        if (data.data.Order.Status === 'waiting_for_payment') {
+            order.Status = '等待支付...';
+            document.getElementById('orderStatus').innerText = order.Status;
+            document.querySelector('.after-payment-popup').style.display = 'block';
+            document.getElementById('payment-link').href = data.data.Order.PaymentLink;
+        }
+        if (data.data.Order.Status === 'paid') {
+            order.Status = '已支付成功，请等待...';
+            document.getElementById('orderStatus').innerText = order.Status;
+            setTimeout(getOrder, 5000);
+        } else if (data.data.Order.Status === 'ready') {
+            order.Status = '已完成';
+            document.querySelector('.after-payment-popup').style.display = 'none';
+            document.querySelector('.ready-popup').style.display = 'block';
+            document.getElementById('orderID').innerText = orderID;
+            document.getElementById('orderStatus').innerText = order.Status;
+        } else {
+            setTimeout(getOrder, 5000);
+        }
+    }
+    getOrder();
+</script>
+
+</html>
