@@ -30,7 +30,7 @@ func (s StockGRPC) GetItems(ctx context.Context, itemIDs []string) ([]*orderpb.I
 	resp, err := s.client.GetItems(ctx, &stockpb.GetItemsRequest{ItemIDs: itemIDs})
 	if err != nil {
 		return nil, err
-	} else {
-		return resp.Items, nil
 	}
+	return resp.Items, nil
+
 }

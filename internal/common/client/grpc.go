@@ -19,12 +19,7 @@ func NewStockGRPCClient(ctx context.Context) (client stockpb.StockServiceClient,
 			return nil
 		}, err
 	}
-	opts, err := grpcDialOpts()
-	if err != nil {
-		return nil, func() error {
-			return nil
-		}, err
-	}
+	opts := grpcDialOpts(grpcAddr)
 	conn, err := grpc.NewClient(grpcAddr, opts...)
 	if err != nil {
 		return nil, func() error {
@@ -42,12 +37,7 @@ func NewOrderGRPCClient(ctx context.Context) (client orderpb.OrderServiceClient,
 			return nil
 		}, err
 	}
-	opts, err := grpcDialOpts()
-	if err != nil {
-		return nil, func() error {
-			return nil
-		}, err
-	}
+	opts := grpcDialOpts(grpcAddr)
 	conn, err := grpc.NewClient(grpcAddr, opts...)
 	if err != nil {
 		return nil, func() error {
@@ -58,8 +48,8 @@ func NewOrderGRPCClient(ctx context.Context) (client orderpb.OrderServiceClient,
 }
 
 // grpcDialOpts returns the gRPC dial options for the given address.
-func grpcDialOpts() ([]grpc.DialOption, error) {
+func grpcDialOpts(_ string) []grpc.DialOption {
 	return []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	}, nil
+	}
 }

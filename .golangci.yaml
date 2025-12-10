@@ -1,0 +1,113 @@
+version: "2"
+run:
+  tests: false
+linters:
+  default: none
+  enable:
+    - ineffassign
+    - nakedret
+    - revive
+    - staticcheck
+    - unconvert
+    - unparam
+    - unused
+  settings:
+    nakedret:
+      max-func-lines: 5
+    revive:
+      confidence: 0.8
+      severity: error
+      enable-all-rules: false
+      rules:
+        - name: blank-imports
+          severity: error
+          disabled: false
+        - name: context-as-argument
+          severity: error
+          disabled: false
+        - name: dot-imports
+          severity: error
+          disabled: false
+        - name: error-return
+          severity: error
+          disabled: false
+        - name: error-naming
+          severity: error
+          disabled: false
+        - name: if-return
+          severity: error
+          disabled: false
+        - name: increment-decrement
+          severity: error
+          disabled: false
+        - name: var-declaration
+          severity: error
+          disabled: false
+        - name: package-comments
+          severity: error
+          disabled: false
+        - name: range
+          severity: error
+          disabled: false
+        - name: receiver-naming
+          severity: error
+          disabled: false
+        - name: time-naming
+          severity: error
+          disabled: false
+        - name: indent-error-flow
+          severity: error
+          disabled: false
+        - name: errorf
+          severity: error
+          disabled: false
+        - name: context-keys-type
+          severity: error
+          disabled: false
+        - name: error-strings
+          severity: error
+          disabled: false
+        - name: var-naming
+          arguments:
+            - []
+            - - GRPC
+              - WAL
+          disabled: false
+        - name: exported
+          disabled: true
+        - name: unexported-return
+          disabled: true
+    staticcheck:
+      checks:
+        - all
+        - -SA1019
+        - -SA2002
+        - ST1019
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - ineffassign
+        path: conversion\.go
+    paths:
+      - ^zz_generated.*
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  max-same-issues: 0
+formatters:
+  enable:
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - ^zz_generated.*
+      - third_party$
+      - builtin$
+      - examples$

@@ -44,7 +44,7 @@ func New(consulAddr string) (*Registry, error) {
 func (r *Registry) Register(ctx context.Context, instanceID string, serviceName string, hostPort string) error {
 	parts := strings.Split(hostPort, ":")
 	if len(parts) != 2 {
-		return errors.New("Invalid host:port format")
+		return errors.New("invalid host:port format")
 	}
 	host := parts[0]
 	port, _ := strconv.Atoi(parts[1])

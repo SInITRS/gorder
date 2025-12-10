@@ -32,7 +32,7 @@ func (N StripeProcessor) CreatePaymentLink(ctx context.Context, order *orderpb.O
 	for _, item := range order.Items {
 		items = append(items, &stripe.CheckoutSessionLineItemParams{
 			// price_1SSH8TBK7fImhh4SQD4QSQJJ
-			Price:    stripe.String(string(item.PriceID)),
+			Price:    stripe.String(item.PriceID),
 			Quantity: stripe.Int64(int64(item.Quantity)),
 		})
 	}
