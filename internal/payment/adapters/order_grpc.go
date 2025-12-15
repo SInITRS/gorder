@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/SInITRS/gorder/common/genproto/orderpb"
+	"github.com/SInITRS/gorder/common/tracing"
 	"github.com/sirupsen/logrus"
 )
 
@@ -17,6 +18,8 @@ func NewOrderGRPC(client orderpb.OrderServiceClient) *OrderGRPC {
 
 // UpdateOrder implements command.OrderService.
 func (o *OrderGRPC) UpdateOrder(ctx context.Context, order *orderpb.Order) error {
+	ctx, span := tracing.Start(ctx, "order_grpc.update_order")
+	defer span.End()
 	_, err := o.client.UpdateOrder(ctx, order)
 	logrus.Infof("payment_adapter || update_order, err=%v", err)
 	return err

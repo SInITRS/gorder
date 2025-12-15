@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/SInITRS/gorder/common/broker"
 	"github.com/SInITRS/gorder/common/decorator"
@@ -12,6 +13,7 @@ import (
 	domain "github.com/SInITRS/gorder/order/domain/order"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/otel"
 )
 
 type CreateOrder struct {
@@ -55,6 +57,14 @@ func NewCreateOrderHandler(
 }
 
 func (c createOrderHandler) Handle(ctx context.Context, cmd CreateOrder) (*CreateOrderResult, error) {
+	q, err := c.channel.QueueDeclare(broker.EventOrderCreated, true, false, false, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	t := otel.Tracer("rabbitmq")
+	ctx, span := t.Start(ctx, fmt.Sprintf("rabbitmq.%s.publish", q.Name))
+	defer span.End()
+
 	validItem, err := c.validate(ctx, cmd.Items)
 	if err != nil {
 		return nil, err
@@ -67,14 +77,11 @@ func (c createOrderHandler) Handle(ctx context.Context, cmd CreateOrder) (*Creat
 		return nil, err
 	}
 	// send mq
-	q, err := c.channel.QueueDeclare(broker.EventOrderCreated, true, false, false, false, nil)
-	if err != nil {
-		return nil, err
-	}
 	json, err := json.Marshal(o)
 	if err != nil {
 		return nil, err
 	}
+	header := broker.InjectRabbitMQHeaders(ctx)
 	err = c.channel.PublishWithContext(
 		ctx,
 		"",
@@ -85,6 +92,7 @@ func (c createOrderHandler) Handle(ctx context.Context, cmd CreateOrder) (*Creat
 			ContentType:  "application/json",
 			DeliveryMode: amqp.Persistent,
 			Body:         json,
+			Headers:      header,
 		},
 	)
 	if err != nil {

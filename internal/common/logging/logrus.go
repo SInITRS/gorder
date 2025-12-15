@@ -1,11 +1,8 @@
 package logging
 
 import (
-	"strconv"
-
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
-	prefixed "github.com/x-cray/logrus-prefixed-formatter"
+	// prefixed "github.com/x-cray/logrus-prefixed-formatter"
 )
 
 func Init() {
@@ -24,9 +21,9 @@ func SetFormatter(logger *logrus.Logger) {
 		},
 	})
 	// If not in local environment, use prefixed text formatter for better readability
-	if isLocal, _ := strconv.ParseBool(viper.GetString("local-env")); !isLocal {
-		logger.SetFormatter(&prefixed.TextFormatter{
-			ForceFormatting: true,
-		})
-	}
+	// if isLocal, _ := strconv.ParseBool(viper.GetString("local-env")); !isLocal {
+	// 	logger.SetFormatter(&prefixed.TextFormatter{
+	// 		ForceFormatting: true,
+	// 	})
+	// }
 }
