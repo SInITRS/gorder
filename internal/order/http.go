@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/SInITRS/gorder/common/genproto/orderpb"
+	client "github.com/SInITRS/gorder/common/client/order"
 	"github.com/SInITRS/gorder/common/tracing"
 	"github.com/SInITRS/gorder/order/app"
 	"github.com/SInITRS/gorder/order/app/command"
 	"github.com/SInITRS/gorder/order/app/query"
+	"github.com/SInITRS/gorder/order/convertor"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,14 +20,14 @@ type HTTPServer struct {
 func (H HTTPServer) PostCustomerCustomerIDOrders(c *gin.Context, customerID string) {
 	ctx, span := tracing.Start(c, "PostCustomerCustomerIDOrders")
 	defer span.End()
-	var req orderpb.CreateOrderRequest
+	var req client.CreateOrderRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	r, err := H.app.Commands.CreateOrder.Handle(ctx, command.CreateOrder{
 		CustomerID: req.CustomerID,
-		Items:      req.Items,
+		Items:      convertor.NewItemWithQuantityConvertor().ClientsToEntities(req.Items),
 	})
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"error": err})

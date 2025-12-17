@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/SInITRS/gorder/common/genproto/orderpb"
+	"github.com/SInITRS/gorder/order/entity"
 	"github.com/stripe/stripe-go/v84"
 )
 
@@ -13,24 +13,21 @@ type Order struct {
 	CustomerID  string
 	Status      string
 	PaymentLink string
-	Items       []*orderpb.Item
+	Items       []*entity.Item
 }
 
-func NewOrder(id string, customerID string, status string, paymentLink string, items []*orderpb.Item) (*Order, error) {
+func NewOrder(id, customerID, status, paymentLink string, items []*entity.Item) (*Order, error) {
 	if id == "" {
-		return nil, errors.New("id is required")
+		return nil, errors.New("empty id")
 	}
 	if customerID == "" {
-		return nil, errors.New("customerID is required")
+		return nil, errors.New("empty customerID")
 	}
 	if status == "" {
-		return nil, errors.New("status is required")
-	}
-	if paymentLink == "" {
-		return nil, errors.New("paymentLink is required")
+		return nil, errors.New("empty status")
 	}
 	if items == nil {
-		return nil, errors.New("items is required")
+		return nil, errors.New("empty items")
 	}
 	return &Order{
 		ID:          id,
@@ -39,16 +36,6 @@ func NewOrder(id string, customerID string, status string, paymentLink string, i
 		PaymentLink: paymentLink,
 		Items:       items,
 	}, nil
-}
-
-func (o *Order) ToProto() *orderpb.Order {
-	return &orderpb.Order{
-		ID:          o.ID,
-		CustomerID:  o.CustomerID,
-		Status:      o.Status,
-		Items:       o.Items,
-		PaymentLink: o.CustomerID,
-	}
 }
 
 func (o *Order) IsPaid() error {
