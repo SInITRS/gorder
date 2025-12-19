@@ -2,9 +2,8 @@ package main
 
 import (
 	"context"
-	"log"
 
-	"github.com/SInITRS/gorder/common/config"
+	_ "github.com/SInITRS/gorder/common/config"
 	"github.com/SInITRS/gorder/common/discovery"
 	"github.com/SInITRS/gorder/common/genproto/stockpb"
 	"github.com/SInITRS/gorder/common/logging"
@@ -18,9 +17,6 @@ import (
 )
 
 func init() {
-	if err := config.NewViperConfig(); err != nil {
-		log.Fatalf("viper.ReadInConfig() failed: %v", err)
-	}
 	logging.Init()
 
 }

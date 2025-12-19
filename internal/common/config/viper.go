@@ -1,22 +1,53 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
+	"fmt"
+	"os"
+	"path/filepath"
+	"runtime"
+	"sync"
+
 	"github.com/spf13/viper"
 )
 
-// NewViperConfig initializes the viper configuration.
-func NewViperConfig() error {
-	if err := godotenv.Load("../common/config/.env"); err != nil {
+func init() {
+	if err := NewViperConfig(); err != nil {
+		panic(err)
+	}
+}
+
+var once sync.Once
+
+func NewViperConfig() (err error) {
+	once.Do(func() {
+		err = newViperConfig()
+	})
+	return
+}
+
+func newViperConfig() (err error) {
+	relPath, err := getRelativePathFromCaller()
+	if err != nil {
 		return err
 	}
 	viper.SetConfigName("global")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("../common/config")
+	viper.AddConfigPath(relPath)
 	viper.AutomaticEnv()
 	viper.BindEnv("stripe-key", "STRIPE_SECRET_KEY")
 	viper.BindEnv("endpoint-stripe-secret", "ENDPOINT_STRIPE_SECRET")
 	viper.BindEnv("local-env", "LOCAL_ENV")
 
 	return viper.ReadInConfig()
+}
+
+func getRelativePathFromCaller() (relPath string, err error) {
+	callerPwd, err := os.Getwd()
+	if err != nil {
+		return
+	}
+	_, here, _, _ := runtime.Caller(0)
+	relPath, err = filepath.Rel(callerPwd, filepath.Dir(here))
+	fmt.Printf("caller from: '%s', here: '%s', relpath: '%s'\n", callerPwd, here, relPath)
+	return
 }
