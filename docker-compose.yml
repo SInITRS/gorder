@@ -1,12 +1,14 @@
 services:
   consul:
     image: hashicorp/consul
+    restart: always
     ports:
       - "8500:8500"
       - "8600:8600/udp"
     command: agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0
   rabbit-mq:
     image: "rabbitmq:3-management"
+    restart: always
     pull_policy: always
     environment:
       RABBITMQ_DEFAULT_USER: admin
@@ -17,6 +19,7 @@ services:
 
   jaeger:
     image: "jaegertracing/all-in-one:latest"
+    restart: always
     ports:
       - "6831:6831"
       - "16686:16686"
@@ -25,3 +28,23 @@ services:
       - "4317:4317"
     environment:
       COLLECTOR_OTLP_ENABLED: true
+
+  order-mongo:
+    image: "mongo:7.0.8"
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+
+  mongo-express:
+    image: "mongo-express"
+    restart: always
+    ports:
+      - "8082:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://root:password@order-mongo:27017/
+      ME_CONFIG_BASICAUTH: false

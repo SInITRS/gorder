@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -30,6 +31,10 @@ func newViperConfig() (err error) {
 	if err != nil {
 		return err
 	}
+
+	// Load .env into os environment
+	loadEnvToOs(relPath)
+
 	viper.SetConfigName("global")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(relPath)
@@ -39,6 +44,19 @@ func newViperConfig() (err error) {
 	viper.BindEnv("local-env", "LOCAL_ENV")
 
 	return viper.ReadInConfig()
+}
+
+func loadEnvToOs(path string) {
+	v := viper.New()
+	v.SetConfigFile(filepath.Join(path, ".env"))
+	v.SetConfigType("env")
+	if err := v.ReadInConfig(); err == nil {
+		for _, key := range v.AllKeys() {
+			os.Setenv(strings.ToUpper(key), v.GetString(key))
+		}
+	} else {
+		fmt.Printf("Failed to load .env: %v\n", err)
+	}
 }
 
 func getRelativePathFromCaller() (relPath string, err error) {

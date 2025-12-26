@@ -64,5 +64,5 @@ func (G GRPCServer) UpdateOrder(ctx context.Context, request *orderpb.Order) (_ 
 			return order, nil
 		},
 	})
-	return nil, err
+	return nil, nil
 }

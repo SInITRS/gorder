@@ -44,3 +44,17 @@ func (o *Order) IsPaid() error {
 	}
 	return fmt.Errorf("order status not paid, order id = %s, status = %s", o.ID, o.Status)
 }
+
+func NewPendingOrder(customerId string, items []*entity.Item) (*Order, error) {
+	if customerId == "" {
+		return nil, errors.New("empty customerID")
+	}
+	if items == nil {
+		return nil, errors.New("empty items")
+	}
+	return &Order{
+		CustomerID: customerId,
+		Status:     string(stripe.CheckoutSessionPaymentStatusPaid),
+		Items:      items,
+	}, nil
+}

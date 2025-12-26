@@ -132,23 +132,6 @@
         */
     }
 
-    /* 由于 JS 设置 style.display = 'block' 会覆盖 CSS 中的 display: flex，
-       为了保证弹窗居中，我们需要针对 JS 的行为做特殊的 CSS 处理。
-       我们将 popup 定义为全屏遮罩，利用 padding-top 或 transform 居中内部内容。
-    */
-    .ready-popup,
-    .after-payment-popup {
-        /* JS 设置 block 后，这里作为遮罩层 */
-    }
-
-    /* 增加一个内部容器样式的定义 (虽然 HTML 结构没变，但我们利用 CSS 选择器美化直接子元素) */
-    .ready-popup>*,
-    .after-payment-popup>* {
-        /* 这是一个稍微有些 hack 的写法，因为 HTML 结构比较简单。
-           更好的方式是给内容包一层 div，但为了严格不改结构，我们直接修饰。
-        */
-    }
-
     /* 重新定义弹窗本身为居中的卡片，但因为 JS 覆盖 display，我们使用一种兼容写法 */
     .ready-popup,
     .after-payment-popup {
@@ -253,6 +236,7 @@
         const data = await res.json();
         console.log("data = ", data)
 
+
         /*
         {
           "code": 0,
@@ -262,22 +246,22 @@
           }
         }
          */
-        if (data.data.Order.Status === 'waiting_for_payment') {
-            order.Status = '等待支付...';
-            document.getElementById('orderStatus').innerText = order.Status;
+        if (data.data.order.status === 'waiting_for_payment') {
+            order.status = '等待支付...';
+            document.getElementById('orderStatus').innerText = order.status;
             document.querySelector('.after-payment-popup').style.display = 'block';
-            document.getElementById('payment-link').href = data.data.Order.PaymentLink;
+            document.getElementById('payment-link').href = data.data.order.payment_link;
         }
-        if (data.data.Order.Status === 'paid') {
-            order.Status = '已支付成功，请等待...';
-            document.getElementById('orderStatus').innerText = order.Status;
+        if (data.data.order.status === 'paid') {
+            order.status = '已支付成功，请等待...';
+            document.getElementById('orderStatus').innerText = order.status;
             setTimeout(getOrder, 5000);
-        } else if (data.data.Order.Status === 'ready') {
-            order.Status = '已完成';
+        } else if (data.data.order.status === 'ready') {
+            order.status = '已完成';
             document.querySelector('.after-payment-popup').style.display = 'none';
             document.querySelector('.ready-popup').style.display = 'block';
             document.getElementById('orderID').innerText = orderID;
-            document.getElementById('orderStatus').innerText = order.Status;
+            document.getElementById('orderStatus').innerText = order.status;
         } else {
             setTimeout(getOrder, 5000);
         }
