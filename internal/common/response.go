@@ -34,7 +34,7 @@ func (base *BaseResponse) success(c *gin.Context, data any) {
 }
 func (base *BaseResponse) error(c *gin.Context, err error) {
 	c.JSON(http.StatusOK, response{
-		Errno:   1,
+		Errno:   2,
 		Msg:     err.Error(),
 		Data:    nil,
 		TraceID: tracing.TraceID(c.Request.Context()),
