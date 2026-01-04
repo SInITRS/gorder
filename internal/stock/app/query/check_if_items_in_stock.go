@@ -6,6 +6,7 @@ import (
 	"github.com/SInITRS/gorder/common/decorator"
 	domain "github.com/SInITRS/gorder/stock/domain/stock"
 	"github.com/SInITRS/gorder/stock/entity"
+	"github.com/SInITRS/gorder/stock/infrastructure/integration"
 	"github.com/sirupsen/logrus"
 )
 
@@ -17,6 +18,7 @@ type CheckIfItemsInStockHandler decorator.QueryHandler[CheckIfItemsInStock, []*e
 
 type checkIfItemsInStockHandler struct {
 	stockRepo domain.Repository
+	stripeAPI *integration.StripeAPI
 }
 
 // Deprecated: this is a stub implementation.
@@ -28,9 +30,13 @@ var stub = map[string]string{
 func (c checkIfItemsInStockHandler) Handle(ctx context.Context, query CheckIfItemsInStock) ([]*entity.Item, error) {
 	var res []*entity.Item
 	for _, item := range query.Items {
-		priceID, ok := stub[item.ID]
-		if !ok {
-			priceID = stub["1"]
+		// priceID, ok := stub[item.ID]
+		// if !ok {
+		// 	priceID = stub["1"]
+		// }
+		priceID, err := c.stripeAPI.GetPriceByProductID(ctx, item.ID)
+		if err != nil || priceID == "" {
+			return nil, err
 		}
 		res = append(res, &entity.Item{
 			ID:       item.ID,
@@ -43,14 +49,18 @@ func (c checkIfItemsInStockHandler) Handle(ctx context.Context, query CheckIfIte
 
 func NewCheckIfItemsInStockHandler(
 	stockRepo domain.Repository,
+	stripeAPI *integration.StripeAPI,
 	logger *logrus.Entry,
 	metricClient decorator.MetricsClient,
 ) CheckIfItemsInStockHandler {
 	if stockRepo == nil {
 		panic("stockRepo is nil")
 	}
+	if stripeAPI == nil {
+		panic("nil stripeAPI")
+	}
 	return decorator.ApplyQueryDecorators(
-		checkIfItemsInStockHandler{stockRepo: stockRepo},
+		checkIfItemsInStockHandler{stockRepo: stockRepo, stripeAPI: stripeAPI},
 		logger,
 		metricClient,
 	)
