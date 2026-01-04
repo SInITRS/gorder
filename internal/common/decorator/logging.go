@@ -28,7 +28,8 @@ func (q queryLoggingDecorator[C, R]) Handle(ctx context.Context, cmd C) (result 
 			logger.Debug("Successfully executed query")
 		}
 	}()
-	return q.base.Handle(ctx, cmd)
+	result, err = q.base.Handle(ctx, cmd)
+	return result, err
 }
 
 // commandLoggingDecorator is a decorator that logs the command execution.
@@ -51,7 +52,8 @@ func (c commandLoggingDecorator[C, R]) Handle(ctx context.Context, cmd C) (resul
 			logger.Debug("Successfully executed command")
 		}
 	}()
-	return c.base.Handle(ctx, cmd)
+	result, err = c.base.Handle(ctx, cmd)
+	return result, err
 }
 
 func generateActionName(cmd any) string {

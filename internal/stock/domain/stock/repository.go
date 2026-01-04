@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/SInITRS/gorder/common/genproto/orderpb"
+	"github.com/SInITRS/gorder/stock/entity"
 )
 
 type Repository interface {
-	GetItems(ctx context.Context, ids []string) ([]*orderpb.Item, error)
+	GetItems(ctx context.Context, ids []string) ([]*entity.Item, error)
 }
 
 type NotFoundError struct {

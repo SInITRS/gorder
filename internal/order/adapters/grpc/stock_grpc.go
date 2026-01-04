@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"errors"
 
 	"github.com/SInITRS/gorder/common/genproto/orderpb"
 	"github.com/SInITRS/gorder/common/genproto/stockpb"
@@ -20,6 +21,9 @@ func NewStockGRPC(client stockpb.StockServiceClient) *StockGRPC {
 
 // CheckIfItemsInStock implements the StockServiceServer interface.
 func (s StockGRPC) CheckIfItemsInStock(ctx context.Context, items []*orderpb.ItemWithQuantity) (*stockpb.CheckIfItemsInStockResponse, error) {
+	if items == nil {
+		return nil, errors.New("grpc items cannot be nil")
+	}
 	resp, err := s.client.CheckIfItemsInStock(ctx, &stockpb.CheckIfItemsInStockRequest{Items: items})
 	logrus.Info("stock_grpc response", resp)
 	return resp, err

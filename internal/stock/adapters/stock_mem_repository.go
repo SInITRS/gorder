@@ -4,16 +4,16 @@ import (
 	"context"
 	"sync"
 
-	"github.com/SInITRS/gorder/common/genproto/orderpb"
 	domain "github.com/SInITRS/gorder/stock/domain/stock"
+	"github.com/SInITRS/gorder/stock/entity"
 )
 
 type StockRepository struct {
 	lock  *sync.RWMutex
-	store map[string]*orderpb.Item
+	store map[string]*entity.Item
 }
 
-var stub = map[string]*orderpb.Item{
+var stub = map[string]*entity.Item{
 	"item_id": {
 		ID:       "foo_item",
 		Name:     "stub item",
@@ -47,11 +47,11 @@ func NewMemoryStockRepository() *StockRepository {
 	}
 }
 
-func (s StockRepository) GetItems(ctx context.Context, ids []string) ([]*orderpb.Item, error) {
+func (s StockRepository) GetItems(ctx context.Context, ids []string) ([]*entity.Item, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	var (
-		res     []*orderpb.Item
+		res     []*entity.Item
 		missing []string
 	)
 	for _, id := range ids {

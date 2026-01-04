@@ -28,7 +28,11 @@ func TestCreateOrder_success(t *testing.T) {
 		CustomerId: "123",
 		Items: []sw.ItemWithQuantity{
 			{
-				Id:       "test-item-1",
+				Id:       "prod_TP5IE1MjBdjL5Z",
+				Quantity: 1,
+			},
+			{
+				Id:       "prod_TULsHeZBwnCeDH",
 				Quantity: 1,
 			},
 		},
@@ -54,6 +58,8 @@ func getResponse(t *testing.T, customerID string, body sw.PostCustomerCustomerId
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Logf("body=%v", body)
+
 	response, err := client.PostCustomerCustomerIdOrdersWithResponse(ctx, customerID, body)
 	if err != nil {
 		t.Fatal(err)

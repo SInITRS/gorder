@@ -34,7 +34,8 @@ func (q queryMetricsDecorator[C, R]) Handle(ctx context.Context, cmd C) (result 
 			q.client.Inc(fmt.Sprintf("querys.%s.successh", actionName), int(end.Seconds()))
 		}
 	}()
-	return q.base.Handle(ctx, cmd)
+	result, err = q.base.Handle(ctx, cmd)
+	return result, err
 }
 
 // commandMetricsDecorator is a decorator that measures the command execution time.
@@ -57,5 +58,6 @@ func (c commandMetricsDecorator[C, R]) Handle(ctx context.Context, cmd C) (resul
 			c.client.Inc(fmt.Sprintf("commands.%s.successh", actionName), int(end.Seconds()))
 		}
 	}()
-	return c.base.Handle(ctx, cmd)
+	result, err = c.base.Handle(ctx, cmd)
+	return result, err
 }
