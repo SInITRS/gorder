@@ -253,7 +253,7 @@
             document.getElementById('payment-link').href = data.data.order.payment_link;
         }
         if (data.data.order.status === 'paid') {
-            order.status = '已支付成功，请等待...';
+            order.status = '已支付成功，配送中...';
             document.getElementById('orderStatus').innerText = order.status;
             setTimeout(getOrder, 5000);
         } else if (data.data.order.status === 'ready') {

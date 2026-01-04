@@ -22,9 +22,28 @@ type checkIfItemsInStockHandler struct {
 }
 
 // Deprecated: this is a stub implementation.
-var stub = map[string]string{
-	"1": "price_1SSH8TBK7fImhh4SQD4QSQJJ",
-	"2": "price_1SXNBBBK7fImhh4SHTMTlY11",
+// var stub = map[string]string{
+// 	"1": "price_1SSH8TBK7fImhh4SQD4QSQJJ",
+// 	"2": "price_1SXNBBBK7fImhh4SHTMTlY11",
+// }
+
+func NewCheckIfItemsInStockHandler(
+	stockRepo domain.Repository,
+	stripeAPI *integration.StripeAPI,
+	logger *logrus.Entry,
+	metricClient decorator.MetricsClient,
+) CheckIfItemsInStockHandler {
+	if stockRepo == nil {
+		panic("stockRepo is nil")
+	}
+	if stripeAPI == nil {
+		panic("nil stripeAPI")
+	}
+	return decorator.ApplyQueryDecorators(
+		checkIfItemsInStockHandler{stockRepo: stockRepo, stripeAPI: stripeAPI},
+		logger,
+		metricClient,
+	)
 }
 
 func (c checkIfItemsInStockHandler) Handle(ctx context.Context, query CheckIfItemsInStock) ([]*entity.Item, error) {
@@ -45,23 +64,4 @@ func (c checkIfItemsInStockHandler) Handle(ctx context.Context, query CheckIfIte
 		})
 	}
 	return res, nil
-}
-
-func NewCheckIfItemsInStockHandler(
-	stockRepo domain.Repository,
-	stripeAPI *integration.StripeAPI,
-	logger *logrus.Entry,
-	metricClient decorator.MetricsClient,
-) CheckIfItemsInStockHandler {
-	if stockRepo == nil {
-		panic("stockRepo is nil")
-	}
-	if stripeAPI == nil {
-		panic("nil stripeAPI")
-	}
-	return decorator.ApplyQueryDecorators(
-		checkIfItemsInStockHandler{stockRepo: stockRepo, stripeAPI: stripeAPI},
-		logger,
-		metricClient,
-	)
 }

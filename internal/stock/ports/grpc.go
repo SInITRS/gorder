@@ -29,7 +29,7 @@ func (G GRPCService) GetItems(ctx context.Context, request *stockpb.GetItemsRequ
 }
 
 func (G GRPCService) CheckIfItemsInStock(ctx context.Context, request *stockpb.CheckIfItemsInStockRequest) (*stockpb.CheckIfItemsInStockResponse, error) {
-	_, span := tracing.Start(ctx, "CheckIfItemsInStock")
+	ctx, span := tracing.Start(ctx, "CheckIfItemsInStock")
 	defer span.End()
 	items, err := G.app.Queries.CheckIfItemsInStock.Handle(ctx, query.CheckIfItemsInStock{
 		Items: convertor.NewItemWithQuantityConvertor().ProtosToEntities(request.Items),
